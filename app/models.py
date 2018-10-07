@@ -9,9 +9,17 @@ class User(UserMixin, db.Model): #klasa User dziedziczy po db.Model
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
+    #unique - nie moze sie powtarzac
 
-    def __repr__(self): #repejak printowac, przyda sie do debugowania
-        return '<User {}>'.format(self.username)
+    #def __repr__(self): #repe jak printowac, przyda sie do debugowania
+    #    return '<User {}>'.format(self.username)
+
+    def set_password(self, password): #ustawianie hasla
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):#sprawdzanie
+        return check_password_hash(self.password_hash, password)
+
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
